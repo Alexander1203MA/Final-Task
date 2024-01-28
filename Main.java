@@ -14,94 +14,91 @@
 // - Отфильтровать ноутбуки их первоначального множества и вывести проходящие по
 // условиям.
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-class Laptop {
-    String brand;
-    int ram;
-    int hdd;
-    String os;
-    String color;
-
-    public Laptop(String brand, int ram, int hdd, String os, String color) {
-        this.brand = brand;
+public class Laptop {
+    //public static int counter = 0;
+    //private int id;
+    private String name;
+    private int ram;
+    private int storageCap;
+    private String os;
+    private String color;
+    private double diagonal;
+    public Laptop(String name, int ram, int storageCap, String os, String color, double diagonal){
+        //this.id = counter++;
+        this.name = name;
         this.ram = ram;
-        this.hdd = hdd;
+        this.storageCap = storageCap;
         this.os = os;
         this.color = color;
+        this.diagonal = diagonal;
     }
-
     @Override
     public String toString() {
-        return "Laptop{" +
-                "brand='" + brand + '\'' +
-                ", ram=" + ram +
-                ", hdd=" + hdd +
-                ", os='" + os + '\'' +
-                ", color='" + color + '\'' +
-                '}';
+        return String.format(«Название: %s \n объем оперативной памяти: %d Гб \n объем накопителя %d Гб \n ОС %s \n Цвет %s \n Диагональ %.1f \n»,
+                    this.name, this.ram, this.storageCap, this.os, this.color, this.diagonal);
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Laptop) {
+            returnthis.name.equals(((Laptop) obj).name) && this.ram == ((Laptop) obj).ram
+                                && this.storageCap == ((Laptop) obj).storageCap && this.os.equals(((Laptop) obj).os)
+                                && this.color.equals(((Laptop) obj).color) && this.diagonal == ((Laptop) obj).diagonal;
+        }
+        return false;
+    }
+    public int getRam(){
+        return this.ram;
+    }
+    public int getStorageCap(){
+        return this.storageCap;
+    }
+    public String getOS(){
+        return this.os;
+    }
+    public double getDiagonal(){
+        return this.diagonal;
     }
 }
-
-public class Main {
-    public static void main(String[] args) {
-        Set<Laptop> laptops = new HashSet<>();
-        laptops.add(new Laptop("Dell", 16, 512, "Windows", "Black"));
-        laptops.add(new Laptop("Apple", 8, 256, "MacOS", "Silver"));
-        laptops.add(new Laptop("Lenovo", 32, 1024, "Windows", "Gray"));
-
-        Map<String, Object> filters = new HashMap<>();
-
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Выберите критерии для фильтрации:");
-        System.out.println("1 - ОЗУ");
-        System.out.println("2 - Объем ЖД");
-        System.out.println("3 - Операционная система");
-        System.out.println("4 - Цвет");
-        System.out.println("0 - Завершить выбор");
-
-        int choice;
-        while (true) {
-            choice = scanner.nextInt();
-            if (choice == 0) {
-                break;
-            }
-            switch (choice) {
-                case 1:
-                    System.out.println("Минимальный объем ОЗУ?");
-                    filters.put("ram", scanner.nextInt());
-                    break;
-                case 2:
-                    System.out.println("Минимальный объем ЖД?");
-                    filters.put("hdd", scanner.nextInt());
-                    break;
-                case 3:
-                    System.out.println("Операционная система?");
-                    filters.put("os", scanner.next());
-                    break;
-                case 4:
-                    System.out.println("Цвет?");
-                    filters.put("color", scanner.next());
-                    break;
-                default:
-                    System.out.println("Неверный выбор. Попробуйте снова.");
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+public class App {
+    public static void main(String[] args) throws Exception {
+        Laptop laptop1 = new Laptop(«Lenovo IdealPad 5», 8, 256, «Windows 11», «синий», 15.6);
+        Laptop laptop2 = new Laptop(«Honor MagicBook 16», 16, 512, «без ОС», «серый», 16.1);
+        Laptop laptop3 = new Laptop(«Apple MacBook Air 13», 8, 256, «MacOs», «золотистый», 13.3);
+        Laptop laptop4 = new Laptop(«HP 250 G7», 4, 1024, «без ОС», «черный», 15.6);
+        Laptop laptop5 = new Laptop(«Xiomi RedmiBook 15», 8, 256, «Windows 11», «серый», 15.6);
+        Laptop laptop6 = laptop1;
+        Set<Laptop> unicLaptop = new HashSet<Laptop>();
+        unicLaptop.add(laptop1);
+        unicLaptop.add(laptop2);
+        unicLaptop.add(laptop3);
+        unicLaptop.add(laptop4);
+        unicLaptop.add(laptop5);
+        unicLaptop.add(laptop6);
+        System.out.printf(«Первый ноутбук идентичен шестому: %b \n», laptop1.equals(laptop6));
+        System.out.printf(«Всего уникалных ноутбуков: %d \n», unicLaptop.size());
+        Map<Integer, String> mapCrit = new HashMap<>();
+        mapCrit.put(1, «объем оперативной памяти»);
+        mapCrit.put(2, «объем накопителя»);
+        mapCrit.put(3, «ОС»);
+        mapCrit.put(4, «цвет»);
+        mapCrit.put(5, «диагональ»);
+        Scanner sc = new Scanner(System.in);
+        System.out.println(«Введите желаемые характеристики: 1. объем оперативной памяти: «);
+        int ramUser = sc.nextInt();
+        System.out.println(«объем накопителя: «);
+        int storUser = sc.nextInt();
+        System.out.println(«диагональ»);
+        double digUser = sc.nextDouble();
+        for(Laptop lap: unicLaptop) {
+            if ((lap.getRam() >= ramUser) && (lap.getStorageCap() >= storUser)  && lap.getDiagonal() >= digUser) {
+                System.out.println(lap.toString());
             }
         }
-        
-        scanner.close();
-
-        Set<Laptop> filteredLaptops = laptops.stream()
-                .filter(laptop -> filters.getOrDefault("ram", 0) instanceof Integer && laptop.ram >= (int) filters.getOrDefault("ram", 0))
-                .filter(laptop -> filters.getOrDefault("hdd", 0) instanceof Integer && laptop.hdd >= (int) filters.getOrDefault("hdd", 0))
-                .filter(laptop -> filters.getOrDefault("os", "").equals("") || laptop.os.equalsIgnoreCase((String) filters.getOrDefault("os", "")))
-                .filter(laptop -> filters.getOrDefault("color", "").equals("") || laptop.color.equalsIgnoreCase((String) filters.getOrDefault("color", "")))
-                .collect(Collectors.toSet());
-
-        System.out.println("Отфильтрованные ноутбуки:");
-        for (Laptop laptop : filteredLaptops) {
-            System.out.println(laptop);
-        }
+        sc.close();
     }
 }
